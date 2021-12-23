@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="2d044cd7-c347-46b0-beb6-762d8659565c" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="68806b7d-6010-42be-bcc5-1396c5d86e8c" >
+		<http:request-connection host="localhost" port="8082" />
+	</http:request-config>
+	<flow name="requestlistenerFlow" doc:id="d781b2c6-ac85-4081-904a-4f67bbdc327d" >
+		<http:listener doc:name="Listener" doc:id="60ca55c9-4e5c-4dd6-a5e4-f48d92263efd" config-ref="HTTP_Listener_config" path="/requestlistener"/>
+		<http:request method="POST" doc:name="Request" doc:id="477d5a18-a26b-4383-b568-37558fcfde9c" config-ref="HTTP_Request_configuration" path="/multiplication" outputMimeType="application/json">
+			<http:headers ><![CDATA[#[output application/json
+---
+{
+	"client_secret" : "456def",
+	"client_id" : "123abf"
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	q1 : 2,
+	q2 : 3,
+	q3 : 4
+}]]]></http:query-params>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="242f5793-cc7e-4a6b-915c-cbb5b6d2fff9" message="#[payload]"/>
+	</flow>
+</mule>
